@@ -17,13 +17,13 @@ def create_combo():
 
     if not stance or not lead_leg or not starting_range or not sequence:
         return (
-            jsonify({"message: You must include a stance, lead leg, starting range, and sequence"}),
+            jsonify({"message": "You must include a stance, lead leg, starting range, and sequence"}),
             400,
         )
     new_combo = Combo(stance = stance, lead_leg = lead_leg, starting_range = starting_range, sequence = sequence)
     try:
         db.session.add(new_combo)
-        db.session.commit
+        db.session.commit()
     except Exception as e:
         return jsonify({"message": str(e)}), 400
     return jsonify({"message": "User created"}), 201
