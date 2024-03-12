@@ -1,10 +1,12 @@
 import { useState } from "react"
 
-const ComboForm = () => {
-    const [stance, setStance] = useState("")
-    const [leadLeg, setLeadLeg] = useState("")
-    const [startingRange, setStartingRange] = useState("")
-    const [sequence, setSequence] = useState("")
+const ComboForm = ({existingCombo = {}, updateCallback}) => {
+    const [stance, setStance] = useState(existingCombo.stance || "")
+    const [leadLeg, setLeadLeg] = useState(existingCombo.leadLeg || "")
+    const [startingRange, setStartingRange] = useState(existingCombo.startingRange || "")
+    const [sequence, setSequence] = useState(existingCombo.sequence ||"")
+
+    const updating = Object.entries(existingCombo).length !== 0
 
     const onSubmit = async (e) => {
         e.preventDefault()
@@ -15,9 +17,9 @@ const ComboForm = () => {
             startingRange,
             sequence
         }
-        const url = "http://127.0.0.1:5000/create_combo"
+        const url = "http://127.0.0.1:5000/" + (updating ? `update_combo/${existingCombo.id}` : "create_combo")
         const options = {
-            method: "POST",
+            method: updating ? "PATCH" : "POST",
             headers: {
                 "Content-Type": "application/json"
             },
@@ -28,7 +30,7 @@ const ComboForm = () => {
             const data = await response.json()
             alert(data.message)
         } else {
-            //
+            updateCallback
         }
     }
 
@@ -50,7 +52,7 @@ const ComboForm = () => {
             <label htmlFor="sequence">Sequence:</label>
             <input type="text" id="sequence" value={sequence} onChange={(e) => setSequence(e.target.value)}></input>
         </div>
-        <button type="submit">Create Combo</button>
+        <button type="submit">{updating ? "Update" : "Create Combo"}</button>
     </form>
     );
 };

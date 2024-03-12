@@ -1,6 +1,23 @@
 import React from "react";
 
-const ComboList = ({combos}) => {
+const ComboList = ({combos, updateCombo, updateCallback}) => {
+
+    const deleteCombo = async (id) => {
+        try {
+            const options = {
+                method: "DELETE",
+            }
+            const response = await fetch(`http://127.0.0.1:5000/delete_combo/${id}`, options)
+            if (response.status === 200) {
+                updateCallback()
+            } else {
+                console.error("Failed to delete")
+            }
+        } catch (error) {
+            alert(error)
+        }
+    }
+
     return <div>
         <h2>Combos</h2>
         <table>
@@ -21,8 +38,8 @@ const ComboList = ({combos}) => {
                         <td>{combo.startingRange}</td>
                         <td>{combo.sequence}</td>
                         <td>
-                            <button>Update</button>
-                            <button>Delete</button>
+                            <button onClick={() => updateCombo(combo)}>Update</button>
+                            <button onClick={() => deleteCombo(combo.id)} >Delete</button>
                         </td>
                     </tr>
                 ))}
